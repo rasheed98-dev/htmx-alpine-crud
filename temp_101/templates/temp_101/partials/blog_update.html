@@ -1,0 +1,15 @@
+<tr id="nrow">
+        <td colspan="4">
+
+            <form>
+
+                <input type="text" name="title" value="{{ blog.title }}">
+                <input type="text" name="description" value="{{ blog.description }}">
+
+                <a hx-post="{% url 'blog-partial-aupdate' blog.id %}" hx-trigger="click" hx-target="#nrow" hx-swap="outerHTML"
+                           class="text-primary">save</a>
+
+
+            </form>
+        </td>
+</tr>

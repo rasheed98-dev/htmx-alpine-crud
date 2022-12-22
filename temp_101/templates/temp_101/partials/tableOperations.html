@@ -1,0 +1,29 @@
+    <script>
+        function tableOperations() {
+            return {
+                show: false,
+                blogs: [],
+
+                init() {
+                    this.blogs =  [{
+                        id: 1,
+                        title: 'test',
+                        description: 'value'
+                    }, {
+                        id: 2,
+                        title: 'test',
+                        description: 'value'
+                    }]
+                },
+
+               async addBlog() {
+                    let response = await fetch('')
+                   let message = response.json()
+                   if(response.status ==200) {
+                       this.blogs.push()
+                   }
+                }
+            }
+        }
+
+    </script>
