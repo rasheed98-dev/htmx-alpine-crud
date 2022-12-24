@@ -1,27 +1,130 @@
     <script>
+
+        function  getCookie(name) {
+  if (!document.cookie) {
+    return null;
+  }
+
+  const xsrfCookies = document.cookie.split(';')
+    .map(c => c.trim())
+    .filter(c => c.startsWith(name + '='));
+
+  if (xsrfCookies.length === 0) {
+    return null;
+  }
+  return decodeURIComponent(xsrfCookies[0].split('=')[1]);
+}
+
+
+
         function tableOperations() {
+            {#const blogs = []#}
             return {
                 show: false,
-                blogs: [],
+                blogs:[],
+
+                {#blogs: blogs,#}
+                a:["1","2","3"],
+                csrfToken:'' ,
+                description:'',
+                title:'',
+
+
 
                 init() {
-                    this.blogs =  [{
-                        id: 1,
-                        title: 'test',
-                        description: 'value'
-                    }, {
-                        id: 2,
-                        title: 'test',
-                        description: 'value'
-                    }]
+                    this.loadBlog()
+                     this.csrfToken = getCookie('CSRF-TOKEN');
+                    console.log(getCookie('CSRF-TOKEN'))
+                    {#console.log(this.blogs)#}
+                    {#this.blogs = await fetch('http://127.0.0.1:8000/blog/list/')#}
+                    {#    .then(function (response) {#}
+                    {##}
+                    {#        return this.blogs= response.json()#}
+                    {##}
+                    {#    }).then(function (data){#}
+                    {#        return data#}
+                    {#    })#}
+
+
+                },
+               async loadBlog() {
+                  this.blogs= await fetch('http://127.0.0.1:8000/blog/list/')
+                        .then(function (response) {
+                            // handle success
+                            {#this.blogs = response.json();#}
+                            return this.blogs= response.json()
+                            {#console.log(response.json())#}
+                        }).then(function (data){
+                            {#console.log(data)#}
+                        {#this.blogs.push(data)#}
+                         return   data
+                        {#return blogs#}
+                        {#console.log(this.blogs)#}
+
+
+                    })
+                        .catch(function (error) {
+                            // handle error
+                            console.log(error);
+                        });
+
                 },
 
-               async addBlog() {
-                    let response = await fetch('')
-                   let message = response.json()
+
+
+               async add_b(){
+
+
+
+                   await fetch('http://127.0.0.1:8000/blog/add/', {
+    method: 'POST',
+    {#headers: { 'X-CSRFToken':  this.csrfToken  },#}
+    body: JSON.stringify({
+        title: this.title,
+        description: this.description
+
+    })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+
+                   {#this.blogs.push((JSON.stringify(data)))#}
+
+                },
+
+
+                async addBlog(){
+                    this.blogs.push({title: this.title, description: this.description})
+                    let response = await fetch('http://127.0.0.1:8000/blog/add/', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                       title: this.title,
+                       description: this.description
+
+                           })
+
+
+                        })
+
+                   let message = await response.json()
                    if(response.status ==200) {
-                       this.blogs.push()
+                       {#return message#}
+                       console.log(message)
+                       this.blogs.push(JSON.parse(message))
+                       console.log(this.blogs)
                    }
+
+                },
+
+                async delete_blog(blog_id){
+                    console.log(this.blogs)
+                    console.log(blog_id)
+                    await fetch(`http://127.0.0.1:8000/blog/deleted/${blog_id}/`,{
+                        method:'DELETE'
+                    }).then(function (res){
+                        console.log(this.blogs)
+                        {#this.blogs = this.blogs.filter(b=>b.id!=blog_id)#}
+                    })
                 }
             }
         }
